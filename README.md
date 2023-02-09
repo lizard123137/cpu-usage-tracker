@@ -1,2 +1,6 @@
-# cpu-usage-tracker
-a console application used for determining the CPU usage.
+# *cpu-usage-tracker*
+
+---
+
+This is a Linux console application used for determining the CPU usage.
+
