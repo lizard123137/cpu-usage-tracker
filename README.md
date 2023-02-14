@@ -34,15 +34,16 @@ CFLAGS = -g -Wall -Wextra
 
 In order to run the built application navigate to the project folder and type:
 
-```Terminal
+```
 ./tracker
 ```
 
-To close the application press **Ctrl+C** or **Ctrl+Z**
+To safely close the application press **Ctrl+C** or **Ctrl+Z**
 
 # Tests
 
 This app has been tested for memory leaks using valgrind.
+
 ```
 valgrind --leak-check=full --track-origins=yes ./tracker 
 
