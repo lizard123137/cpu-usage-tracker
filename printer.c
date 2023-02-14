@@ -17,9 +17,9 @@ void *printer (void *arg) {
             printf("CPU CORE %d| %s%.*s\033[0m %*lu%%\n",
                 idx,
                 (printBufferPtr[idx] < WARNING_THRESHOLD) ? "\033[32;42m" : "\033[31;41m",
-                (int)printBufferPtr[idx]/2,
+                (uint32_t)printBufferPtr[idx]/2,
                 "                                                  ",
-                (int)(50 - printBufferPtr[idx]/2),
+                (uint32_t)(50 - printBufferPtr[idx]/2),
                 printBufferPtr[idx]);
         }
 

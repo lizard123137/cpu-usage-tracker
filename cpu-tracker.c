@@ -65,11 +65,11 @@ int main(void) {
     sa.sa_handler = &handle_sigterm;
     sa.sa_flags = SA_INTERRUPT;
 
-    onlineProcessorsAmount = (int)sysconf(_SC_NPROCESSORS_ONLN) + 1;
+    onlineProcessorsAmount = (uint32_t)sysconf(_SC_NPROCESSORS_ONLN) + 1;
 
     for (int32_t i = 0; i < BUFFER_SIZE; i++) {
-        readBuffer[i] = malloc(sizeof(CPU_DATA) * (unsigned long)onlineProcessorsAmount);
-        printBuffer[i] = malloc(sizeof(unsigned long) * (unsigned long)onlineProcessorsAmount);
+        readBuffer[i] = malloc(sizeof(CPU_DATA) * (uint64_t)onlineProcessorsAmount);
+        printBuffer[i] = malloc(sizeof(uint64_t) * (uint64_t)onlineProcessorsAmount);
 
         if(readBuffer[i] == NULL || printBuffer[i] == NULL)
             exit(EXIT_FAILURE);

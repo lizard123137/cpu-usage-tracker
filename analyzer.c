@@ -54,7 +54,7 @@ void *analyzer(void *arg) {
         pthread_mutex_lock(&printBufferMutex);
 
         printBufferPtr = get_printbuffer_data();
-        memcpy(printBufferPtr, processedData, (unsigned long)onlineProcessorsAmount * sizeof(unsigned long));
+        memcpy(printBufferPtr, processedData, (uint64_t)onlineProcessorsAmount * sizeof(uint64_t));
 
         pthread_mutex_unlock(&printBufferMutex);
         sem_post(&printSemaphoreFull);
