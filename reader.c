@@ -3,7 +3,7 @@
 void *reader(void *arg) {
     (void)arg;
 
-    while(1) {
+    for(;;) {
         sem_wait(&readSemaphoreFull);
         pthread_mutex_lock(&readBufferMutex);
 
@@ -15,7 +15,7 @@ void *reader(void *arg) {
         if (file == NULL)
             exit(EXIT_FAILURE);
 
-        for(int32_t idx = 0; idx < onlineProcessorsAmount; idx++) {
+        for(size_t idx = 0; idx < onlineProcessorsAmount; idx++) {
             fgets(data, sizeof(data), file);
 
             sscanf(data, "cpu%d %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",  

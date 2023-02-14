@@ -3,7 +3,7 @@
 void *printer (void *arg) {
     (void)arg;
 
-    while(1) {
+    for(;;) {
         sem_wait(&printSemaphoreFull);
         pthread_mutex_lock(&printBufferMutex);
 
