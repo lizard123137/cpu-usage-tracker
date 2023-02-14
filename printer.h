@@ -1,10 +1,6 @@
-#ifndef PRINTER_H
-#define PRINTER_H
-
+#pragma once
 #include "cpu-tracker.h"
 
 #define WARNING_THRESHOLD 25
 
 void *printer(void *arg);
-
-#endif
