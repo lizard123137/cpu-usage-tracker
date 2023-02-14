@@ -58,7 +58,6 @@ static void watchdog(void) {
     while(running) {
         sleep(1);   // TODO: everything :(
     }
-    printf("\e[?25h");
 }
 
 int main(void) {
@@ -81,8 +80,6 @@ int main(void) {
     pthread_create(&reader_thread, NULL, reader, NULL);
     pthread_create(&analyzer_thread, NULL, analyzer, NULL);
     pthread_create(&printer_thread, NULL, printer, NULL);
-    
-    printf("\e[?25l");
 
     sigaction(SIGTERM, &sa, NULL);
     sigaction(SIGINT, &sa, NULL);
