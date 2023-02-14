@@ -40,6 +40,28 @@ In order to run the built application navigate to the project folder and type:
 
 To close the application press **Ctrl+C** or **Ctrl+Z**
 
+# Tests
+
+This app has been tested for memory leaks using valgrind.
+```
+valgrind --leak-check=full --track-origins=yes ./tracker 
+
+CPU USAGE FOR EACH CORE 
+
+CPU CORE 1| 3%
+CPU CORE 2| 5%
+CPU CORE 3| 4%
+CPU CORE 4| 4%
+^C
+ CLOSING THREADS...
+==5096== 
+==5096== HEAP SUMMARY:
+==5096==     in use at exit: 0 bytes in 0 blocks
+==5096==   total heap usage: 45 allocs, 45 frees, 20,222 bytes allocated
+==5096== 
+==5096== All heap blocks were freed -- no leaks are possible
+```
+
 # Technologies used
 
 - C programming language
