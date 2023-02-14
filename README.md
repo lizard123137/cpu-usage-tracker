@@ -1,6 +1,6 @@
-# cpu-usage-tracker
+# CPU usage tracker
 
-This is a **Linux** console application used for determining the CPU usage for each CPU core.
+This is a **Linux** console application used for determining the CPU usage for each CPU cores.
 
 It is composed of several threads:
 - **Reader** - reads the /proc/stat directory
