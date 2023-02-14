@@ -36,10 +36,11 @@ uint64_t *get_printbuffer_data(void) {
 static void handle_sigterm(int32_t sig) {
     (void)sig;
     printf("\n CLOSING THREADS...\n");
-    running = 0;
+
     pthread_cancel(reader_thread);
     pthread_cancel(analyzer_thread);
     pthread_cancel(printer_thread);
+    running = 0;
 }
 
 static void init_semaphores(void) {
@@ -81,8 +82,9 @@ int main(void) {
     pthread_create(&analyzer_thread, NULL, analyzer, NULL);
     pthread_create(&printer_thread, NULL, printer, NULL);
 
-    sigaction(SIGTERM, &sa, NULL);
+    sigaction(SIGTSTP, &sa, NULL);
     sigaction(SIGINT, &sa, NULL);
+    sigaction(SIGTERM, &sa, NULL);
 
     pthread_join(reader_thread, NULL);
     pthread_join(analyzer_thread, NULL);
