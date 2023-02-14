@@ -33,7 +33,7 @@ uint64_t *get_printbuffer_data(void) {
     return printBuffer[idx];
 }
 
-static void handle_sigterm(int32_t sig) {
+static void handle_sigactions(int32_t sig) {
     (void)sig;
     printf("\n CLOSING THREADS...\n");
 
@@ -41,6 +41,16 @@ static void handle_sigterm(int32_t sig) {
     pthread_cancel(analyzer_thread);
     pthread_cancel(printer_thread);
     running = 0;
+}
+
+static void init_buffers(void) {
+    for (int32_t idx = 0; idx < BUFFER_SIZE; idx++) {
+        readBuffer[idx] = malloc(sizeof(CPU_DATA) * (uint64_t)onlineProcessorsAmount);
+        printBuffer[idx] = malloc(sizeof(uint64_t) * (uint64_t)onlineProcessorsAmount);
+
+        if(readBuffer[idx] == NULL || printBuffer[idx] == NULL)
+            exit(EXIT_FAILURE);
+    }
 }
 
 static void init_semaphores(void) {
@@ -55,27 +65,35 @@ static void init_semaphores(void) {
         exit(EXIT_FAILURE);
 }
 
+static void dealocate_data(void) {
+    pthread_mutex_destroy(&readBufferMutex);
+    sem_destroy(&readSemaphoreEmpty);
+    sem_destroy(&readSemaphoreFull);
+
+    pthread_mutex_destroy(&printBufferMutex);
+    sem_destroy(&printSemaphoreEmpty);
+    sem_destroy(&printSemaphoreFull);
+
+    for (int32_t i = 0; i < BUFFER_SIZE; i++) {
+        free(readBuffer[i]);
+        free(printBuffer[i]);
+    }
+}
+
 static void watchdog(void) {
     while(running) {
         sleep(1);   // TODO: everything :(
     }
 }
 
-int main(void) {
+int32_t main(void) {
     struct sigaction sa;
-    sa.sa_handler = &handle_sigterm;
+    sa.sa_handler = &handle_sigactions;
     sa.sa_flags = SA_INTERRUPT;
 
     onlineProcessorsAmount = (uint32_t)sysconf(_SC_NPROCESSORS_ONLN) + 1;
 
-    for (int32_t i = 0; i < BUFFER_SIZE; i++) {
-        readBuffer[i] = malloc(sizeof(CPU_DATA) * (uint64_t)onlineProcessorsAmount);
-        printBuffer[i] = malloc(sizeof(uint64_t) * (uint64_t)onlineProcessorsAmount);
-
-        if(readBuffer[i] == NULL || printBuffer[i] == NULL)
-            exit(EXIT_FAILURE);
-    }
-
+    init_buffers();
     init_semaphores();
 
     pthread_create(&reader_thread, NULL, reader, NULL);
@@ -92,18 +110,6 @@ int main(void) {
 
     watchdog();
 
-    pthread_mutex_destroy(&readBufferMutex);
-    sem_destroy(&readSemaphoreEmpty);
-    sem_destroy(&readSemaphoreFull);
-
-    pthread_mutex_destroy(&printBufferMutex);
-    sem_destroy(&printSemaphoreEmpty);
-    sem_destroy(&printSemaphoreFull);
-
-    for (int32_t i = 0; i < BUFFER_SIZE; i++) {
-        free(readBuffer[i]);
-        free(printBuffer[i]);
-    }
-
+    dealocate_data();
     return 0;
 }
