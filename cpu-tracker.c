@@ -40,8 +40,6 @@ static void handle_sigterm(int sig) {
     pthread_cancel(reader_thread);
     pthread_cancel(analyzer_thread);
     pthread_cancel(printer_thread);
-
-    printf("\e[?25h");
 }
 
 static void init_semaphores(void) {
@@ -60,6 +58,7 @@ static void watchdog(void) {
     while(running) {
         sleep(1);   // TODO: everything :(
     }
+    printf("\e[?25h");
 }
 
 int main(void) {
@@ -83,9 +82,10 @@ int main(void) {
     pthread_create(&analyzer_thread, NULL, analyzer, NULL);
     pthread_create(&printer_thread, NULL, printer, NULL);
     
-    sigaction(SIGTERM, &sa, NULL);
-
     printf("\e[?25l");
+
+    sigaction(SIGTERM, &sa, NULL);
+    sigaction(SIGINT, &sa, NULL);
 
     pthread_join(reader_thread, NULL);
     pthread_join(analyzer_thread, NULL);
