@@ -1,4 +1,10 @@
 *.o
+*.obj
+
+*.lib
+*.a
+*.la
+*.lo
 
 *.exe
 *.out
@@ -7,3 +13,4 @@
 
 .vscode/settings.json
 .vscode/tasks.json
+tracker
