@@ -15,7 +15,7 @@ void *reader(void *arg) {
         if (file == NULL)
             exit(EXIT_FAILURE);
 
-        for(int idx = 0; idx < onlineProcessorsAmount; idx++) {
+        for(int32_t idx = 0; idx < onlineProcessorsAmount; idx++) {
             fgets(data, sizeof(data), file);
 
             sscanf(data, "cpu%d %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",  

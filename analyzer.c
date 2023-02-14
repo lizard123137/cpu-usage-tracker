@@ -1,18 +1,18 @@
 #include "analyzer.h"
 
 // MAGIC STACKOVERFLOW FORMULA
-static unsigned long cpu_usage_percentage(CPU_DATA prev, CPU_DATA cur) {
-    unsigned long prevIdle = prev.idle + prev.iowait;
-    unsigned long idle = cur.idle + cur.iowait;
+static uint64_t cpu_usage_percentage(CPU_DATA prev, CPU_DATA cur) {
+    uint64_t prevIdle = prev.idle + prev.iowait;
+    uint64_t idle = cur.idle + cur.iowait;
 
-    unsigned long prevNonIdle = prev.user + prev.nice + prev.system + prev.irq + prev.softirq + prev.steal;
-    unsigned long nonIdle = cur.user + cur.nice + cur.system + cur.irq + cur.softirq + cur.steal;
+    uint64_t prevNonIdle = prev.user + prev.nice + prev.system + prev.irq + prev.softirq + prev.steal;
+    uint64_t nonIdle = cur.user + cur.nice + cur.system + cur.irq + cur.softirq + cur.steal;
 
-    unsigned long prevTotal = prevIdle + prevNonIdle;
-    unsigned long total = idle + nonIdle;
+    uint64_t prevTotal = prevIdle + prevNonIdle;
+    uint64_t total = idle + nonIdle;
 
-    unsigned long totald = total - prevTotal;
-    unsigned long idled = idle - prevIdle;
+    uint64_t totald = total - prevTotal;
+    uint64_t idled = idle - prevIdle;
 
     return (totald - idled) * 100 / totald;
 }
@@ -23,13 +23,13 @@ void *analyzer(void *arg) {
     CPU_DATA *prev;
     CPU_DATA *cur;
 
-    unsigned long *processedData;
-    unsigned long *printBufferPtr;
+    uint64_t *processedData;
+    uint64_t *printBufferPtr;
 
-    if ((prev = malloc(sizeof(CPU_DATA) * (unsigned long)onlineProcessorsAmount)) == NULL)
+    if ((prev = malloc(sizeof(CPU_DATA) * (uint64_t)onlineProcessorsAmount)) == NULL)
         return NULL;
 
-    if ((processedData = malloc(sizeof(unsigned long) * (unsigned long)onlineProcessorsAmount)) == NULL) {
+    if ((processedData = malloc(sizeof(uint64_t) * (uint64_t)onlineProcessorsAmount)) == NULL) {
         free(prev);
         return NULL;
     }
@@ -42,7 +42,7 @@ void *analyzer(void *arg) {
         pthread_mutex_lock(&readBufferMutex);
     
         cur = get_readbuffer_data();
-        for (int idx = 0; idx < onlineProcessorsAmount; idx++) {
+        for (int32_t idx = 0; idx < onlineProcessorsAmount; idx++) {
             processedData[idx] = cpu_usage_percentage(prev[idx], cur[idx]);
             prev[idx] = cur[idx];
         }

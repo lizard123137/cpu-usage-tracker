@@ -9,7 +9,7 @@ pthread_mutex_t readBufferMutex = PTHREAD_MUTEX_INITIALIZER;
 sem_t readSemaphoreEmpty;
 sem_t readSemaphoreFull;
 
-static unsigned long *printBuffer[BUFFER_SIZE];
+static uint64_t *printBuffer[BUFFER_SIZE];
 pthread_mutex_t printBufferMutex = PTHREAD_MUTEX_INITIALIZER;
 sem_t printSemaphoreEmpty;
 sem_t printSemaphoreFull;
@@ -18,22 +18,22 @@ static pthread_t reader_thread;
 static pthread_t printer_thread;
 static pthread_t analyzer_thread;
 
-int onlineProcessorsAmount = 0;
-int running = 1;
+uint8_t onlineProcessorsAmount = 0;
+uint8_t running = 1;
 
 CPU_DATA *get_readbuffer_data(void) {
-    int idx;
+    int32_t idx;
     sem_getvalue(&readSemaphoreEmpty, &idx);
     return readBuffer[idx];
 }
 
-unsigned long *get_printbuffer_data(void) {
-    int idx;
+uint64_t *get_printbuffer_data(void) {
+    int32_t idx;
     sem_getvalue(&printSemaphoreEmpty, &idx);
     return printBuffer[idx];
 }
 
-static void handle_sigterm(int sig) {
+static void handle_sigterm(int32_t sig) {
     (void)sig;
     printf("\n CLOSING THREADS...\n");
     running = 0;
@@ -67,7 +67,7 @@ int main(void) {
 
     onlineProcessorsAmount = (int)sysconf(_SC_NPROCESSORS_ONLN) + 1;
 
-    for (int i = 0; i < BUFFER_SIZE; i++) {
+    for (int32_t i = 0; i < BUFFER_SIZE; i++) {
         readBuffer[i] = malloc(sizeof(CPU_DATA) * (unsigned long)onlineProcessorsAmount);
         printBuffer[i] = malloc(sizeof(unsigned long) * (unsigned long)onlineProcessorsAmount);
 
@@ -98,7 +98,7 @@ int main(void) {
     sem_destroy(&printSemaphoreEmpty);
     sem_destroy(&printSemaphoreFull);
 
-    for (int i = 0; i < BUFFER_SIZE; i++) {
+    for (int32_t i = 0; i < BUFFER_SIZE; i++) {
         free(readBuffer[i]);
         free(printBuffer[i]);
     }

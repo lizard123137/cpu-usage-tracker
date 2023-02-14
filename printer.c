@@ -7,12 +7,12 @@ void *printer (void *arg) {
         sem_wait(&printSemaphoreFull);
         pthread_mutex_lock(&printBufferMutex);
 
-        unsigned long *printBufferPtr = get_printbuffer_data();
+        uint64_t *printBufferPtr = get_printbuffer_data();
 
         system("clear");
 
         printf("\033[30;47m CPU USAGE FOR EACH CORE \033[0m\n\n");
-        for (int idx = 1; idx < onlineProcessorsAmount; idx++) {
+        for (int32_t idx = 1; idx < onlineProcessorsAmount; idx++) {
             
             printf("CPU CORE %d| %s%.*s\033[0m %*lu%%\n",
                 idx,
