@@ -26,6 +26,8 @@ void *printer (void *arg) {
         pthread_mutex_unlock(&printBufferMutex);
         sem_post(&printSemaphoreEmpty);
 
+        inform_watchdog(2);
+
         sleep(1);
     }
 }

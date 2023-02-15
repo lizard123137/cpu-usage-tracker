@@ -37,6 +37,9 @@ void *reader(void *arg) {
         
         pthread_mutex_unlock(&readBufferMutex);
         sem_post(&readSemaphoreEmpty);
+
+        inform_watchdog(0);
+
         sleep(READ_INTERVAL);
     }
 }

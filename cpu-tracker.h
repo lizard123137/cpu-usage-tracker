@@ -8,8 +8,10 @@
 #include <signal.h>
 #include <string.h>
 #include <stdint.h>
+#include <time.h>
 
 #define BUFFER_SIZE 10
+#define WATCHDOG_TIMEOUT 1
 
 typedef struct CPU_DATA {
     int32_t cpu;
@@ -35,5 +37,8 @@ extern pthread_mutex_t printBufferMutex;
 extern sem_t printSemaphoreEmpty;
 extern sem_t printSemaphoreFull;
 
+extern pthread_mutex_t watchdogMutex;
+
 CPU_DATA *get_readbuffer_data(void);
 uint64_t *get_printbuffer_data(void);
+void inform_watchdog(uint8_t);

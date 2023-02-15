@@ -14,6 +14,9 @@ pthread_mutex_t printBufferMutex = PTHREAD_MUTEX_INITIALIZER;
 sem_t printSemaphoreEmpty;
 sem_t printSemaphoreFull;
 
+static uint8_t watchdogThreads[3] = { 0 };
+pthread_mutex_t watchdogMutex = PTHREAD_MUTEX_INITIALIZER;
+
 static pthread_t reader_thread;
 static pthread_t printer_thread;
 static pthread_t analyzer_thread;
@@ -36,11 +39,11 @@ uint64_t *get_printbuffer_data(void) {
 static void handle_sigactions(int32_t sig) {
     (void)sig;
     printf("\n CLOSING THREADS...\n");
+    running = 0;
 
     pthread_cancel(reader_thread);
     pthread_cancel(analyzer_thread);
     pthread_cancel(printer_thread);
-    running = 0;
 }
 
 static void init_buffers(void) {
@@ -74,15 +77,48 @@ static void dealocate_data(void) {
     sem_destroy(&printSemaphoreEmpty);
     sem_destroy(&printSemaphoreFull);
 
-    for (int32_t i = 0; i < BUFFER_SIZE; i++) {
-        free(readBuffer[i]);
-        free(printBuffer[i]);
+    for (int32_t idx = 0; idx < BUFFER_SIZE; idx++) {
+        free(readBuffer[idx]);
+        free(printBuffer[idx]);
     }
 }
 
+void inform_watchdog(uint8_t idx) {
+    pthread_mutex_lock(&watchdogMutex);
+    watchdogThreads[idx] = 1;
+    pthread_mutex_unlock(&watchdogMutex);
+}
+
 static void watchdog(void) {
+    uint64_t timesSinceLastUpdate[3];
+    
+    for (int32_t idx = 0; idx < 3; idx++) {
+        timesSinceLastUpdate[idx] = time(0);
+    }
+
     while(running) {
-        sleep(1);   // TODO: everything :(
+        sleep(WATCHDOG_TIMEOUT);
+
+        pthread_mutex_lock(&watchdogMutex);
+        for (int32_t idx = 0; idx < 3; idx++) {
+            if(watchdogThreads[idx] == 1)
+                timesSinceLastUpdate[idx] = time(0);
+
+            if(time(0) - timesSinceLastUpdate[idx] > 2) {
+                running = 0;
+                handle_sigactions(-1);
+                return;
+            }
+                
+            watchdogThreads[idx] = 0;
+        }
+        pthread_mutex_unlock(&watchdogMutex);
+    }
+}
+
+static void init_watchdog(void) {
+    for (int32_t idx = 0; idx < 3; idx++) {
+        watchdogThreads[idx] = 0;
     }
 }
 
@@ -95,6 +131,7 @@ int32_t main(void) {
 
     init_buffers();
     init_semaphores();
+    init_watchdog();
 
     pthread_create(&reader_thread, NULL, reader, NULL);
     pthread_create(&analyzer_thread, NULL, analyzer, NULL);
@@ -104,12 +141,12 @@ int32_t main(void) {
     sigaction(SIGINT, &sa, NULL);
     sigaction(SIGTERM, &sa, NULL);
 
+    watchdog();
+
     pthread_join(reader_thread, NULL);
     pthread_join(analyzer_thread, NULL);
     pthread_join(printer_thread, NULL);
 
-    watchdog();
-
-    dealocate_data();
+    dealocate_data();    
     return 0;
 }

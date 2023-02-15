@@ -58,6 +58,8 @@ void *analyzer(void *arg) {
 
         pthread_mutex_unlock(&printBufferMutex);
         sem_post(&printSemaphoreFull);
+
+        inform_watchdog(1);
     }
 
     pthread_cleanup_pop(1);
