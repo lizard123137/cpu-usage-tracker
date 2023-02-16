@@ -116,12 +116,6 @@ static void watchdog(void) {
     }
 }
 
-static void init_watchdog(void) {
-    for (int32_t idx = 0; idx < 3; idx++) {
-        watchdogThreads[idx] = 0;
-    }
-}
-
 int32_t main(void) {
     struct sigaction sa;
     sa.sa_handler = &handle_sigactions;
@@ -131,7 +125,6 @@ int32_t main(void) {
 
     init_buffers();
     init_semaphores();
-    init_watchdog();
 
     pthread_create(&reader_thread, NULL, reader, NULL);
     pthread_create(&analyzer_thread, NULL, analyzer, NULL);
