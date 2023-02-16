@@ -1,30 +1,25 @@
-PROJECT = tracker
+PROJECT := tracker
 
-CC = gcc
-CFLAGS = -g -Wall -Wextra
+CC := gcc
+CFLAGS := -g -Wall -Wextra -pthread
 #CC = clang
 #CFLAGS = -Weverything
 
-LIBS = -pthread
-CFILES = reader.o analyzer.o printer.o cpu-tracker.o
+SRC := src
 
-tracker: $(CFILES)
-	$(CC) $(LIBS) $(CFLAGS) -o $@ $(CFILES)
+SRCS = $(wildcard $(SRC)/*.c)
+HDRS = $(wildcard $(SRC)/*.h)
+OBJS = reader.o analyzer.o printer.o cpu-tracker.o
 
-$(CFILES): %.o: %.c %.h
-cpu-tracker.o: cpu-tracker.c reader.h cpu-tracker.h
+$(PROJECT): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(OBJS): %.o: $(SRC)/%.c $(SRC)/%.h
+	$(CC) $(CFLAGS) -c $<
 
 .PHONY: clean
 clean:
-	rm -f *.o $(PROJECT)
-
-.PHONY: install
-install:
-	@echo no install tasks required
-
-.PHONY: uninstall
-uninstall:
-	@echo no uninstall tasks required
+	rm -r *.o
 
 .PHONY: help
 help:
