@@ -51,7 +51,7 @@ static void init_buffers(void) {
         readBuffer[idx] = malloc(sizeof(CPU_DATA) * (uint64_t)onlineProcessorsAmount);
         printBuffer[idx] = malloc(sizeof(uint64_t) * (uint64_t)onlineProcessorsAmount);
 
-        if(readBuffer[idx] == NULL || printBuffer[idx] == NULL)
+        if (readBuffer[idx] == NULL || printBuffer[idx] == NULL)
             exit(EXIT_FAILURE);
     }
 }
@@ -101,10 +101,10 @@ static void watchdog(void) {
 
         pthread_mutex_lock(&watchdogMutex);
         for (int32_t idx = 0; idx < 3; idx++) {
-            if(watchdogThreads[idx] == 1)
+            if ( watchdogThreads[idx] == 1)
                 timesSinceLastUpdate[idx] = time(0);
 
-            if(time(0) - timesSinceLastUpdate[idx] > 2) {
+            if (time(0) - timesSinceLastUpdate[idx] > 2) {
                 running = 0;
                 handle_sigactions(-1);
                 return;

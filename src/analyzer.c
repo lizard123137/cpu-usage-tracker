@@ -37,7 +37,7 @@ void *analyzer(void *arg) {
     pthread_cleanup_push(free, prev);
     pthread_cleanup_push(free, processedData);
 
-    for(;;) {
+    for (;;) {
         sem_wait(&readSemaphoreEmpty);
         pthread_mutex_lock(&readBufferMutex);
     
