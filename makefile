@@ -19,7 +19,8 @@ $(OBJS): %.o: $(SRC)/%.c $(SRC)/%.h
 
 .PHONY: clean
 clean:
-	rm -r *.o
+	rm -r *.o 
+	rm tracker
 
 .PHONY: help
 help:
