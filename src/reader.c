@@ -17,6 +17,7 @@ void *reader(void *arg) {
 
         for (size_t idx = 0; idx < onlineProcessorsAmount; idx++) {
             fgets(data, sizeof(data), file);
+            assert(data != NULL);
 
             sscanf(data, "cpu%d %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu",  
                 &readbuffer_data[idx].cpu,

@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <time.h>
+#include <assert.h>
 
 #define BUFFER_SIZE 10
 #define WATCHDOG_TIMEOUT 1

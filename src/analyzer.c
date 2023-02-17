@@ -44,6 +44,8 @@ void *analyzer(void *arg) {
         cur = get_readbuffer_data();
         for (int32_t idx = 0; idx < onlineProcessorsAmount; idx++) {
             processedData[idx] = cpu_usage_percentage(prev[idx], cur[idx]);
+
+            assert(processedData[idx] <= 100);
             prev[idx] = cur[idx];
         }
 
