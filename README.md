@@ -7,7 +7,6 @@ It is composed of several threads:
 - **Analazer** - processes the data and sends it to Printer
 - **Printer** - prints the formated data to the console
 - **Watchdog** - makes sure that everything is running correctly
-- **Logger** - logs the data to a file
 
 It uses the pthread library to run these as seperate threads
 
